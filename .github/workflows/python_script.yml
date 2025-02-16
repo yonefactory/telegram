@@ -2,7 +2,7 @@ name: Run Python Script Every Hour
 
 on:
   schedule:
-    - cron: "0 * * * *" # 매 시간 정각에 실행 (UTC 기준)
+    - cron: "*/5 * * * *" # 매 시간 정각에 실행 (UTC 기준)
 
 jobs:
   run-script:
