@@ -1,6 +1,7 @@
 name: Send Telegram Message
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
