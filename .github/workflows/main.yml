@@ -4,9 +4,6 @@ on:
   schedule:
     - cron: "* * * * *" # 매 분마다 실행
 
-permissions:
-  contents: read
-
 jobs:
   build:
     send-message:
