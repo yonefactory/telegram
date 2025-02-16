@@ -20,14 +20,13 @@ def send_message():
         print(f"메시지 전송 실패: {response.text}")
 
 def send_news():
-
-    # 뉴스 웹사이트에서 주요 뉴스 크롤링
-    url = "https://news.ycombinator.com/"  # 예시: Hacker News
+    # 네이버 뉴스 주요 헤드라인 크롤링
+    url = "https://news.naver.com/"  # 네이버 뉴스 홈페이지
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     
-    # 뉴스 제목 가져오기 (예시)
-    headlines = soup.find_all('a', class_='storylink')
+    # 주요 뉴스 제목 가져오기
+    headlines = soup.find_all('a', {'class': 'cluster_text_headline'})
     top_headlines = [headline.get_text() for headline in headlines[:5]]  # 상위 5개 뉴스 제목
     
     # 텔레그램 메시지 내용
