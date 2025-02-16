@@ -37,7 +37,7 @@ def send_news():
         message += f"{idx}. {headline}\n"
     
     # 텔레그램 메시지 보내기
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     params = {
         "chat_id": CHAT_ID,
         "text": message
