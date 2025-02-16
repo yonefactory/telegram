@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-BOT_TOKEN = "7802394343:AAHqzzij5wD5ms_JkYN3oWz6VvICPMYJNCo"
+TOKEN = "7802394343:AAHqzzij5wD5ms_JkYN3oWz6VvICPMYJNCo"
 #CHAT_ID = "7562974684"
 CHAT_ID = "-4738445656"
 
@@ -10,7 +10,7 @@ CHAT_ID = "-4738445656"
 def send_message():
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     message = f"현재 시간: {current_time}"
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": message}
     
     response = requests.post(url, data=payload)
@@ -25,9 +25,9 @@ def send_news():
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     
-    # 주요 뉴스 제목 가져오기
+    # 주요 뉴스 제목 가져오기 (class 이름이 변경될 수 있습니다. 직접 확인 후 수정)
     headlines = soup.find_all('a', {'class': 'cluster_text_headline'})
-    top_headlines = [headline.get_text() for headline in headlines[:5]]  # 상위 5개 뉴스 제목
+    top_headlines = [headline.get_text(strip=True) for headline in headlines[:5]]  # 상위 5개 뉴스 제목
     
     # 텔레그램 메시지 내용
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -36,7 +36,7 @@ def send_news():
         message += f"{idx}. {headline}\n"
     
     # 텔레그램 메시지 보내기
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     params = {
         "chat_id": CHAT_ID,
         "text": message
