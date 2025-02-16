@@ -37,14 +37,12 @@ def send_news():
         message += f"{idx}. {headline}\n"
     
     # 텔레그램 메시지 보내기
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {"chat_id": CHAT_ID, "text": message}
-    
-    response = requests.post(url, data=payload)
-    if response.status_code == 200:
-        print("메시지 전송 성공!")
-    else:
-        print(f"메시지 전송 실패: {response.text}")
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    params = {
+        "chat_id": CHAT_ID,
+        "text": message
+    }
+    response = requests.get(url, params=params)
 
 if __name__ == "__main__":
     send_news()
