@@ -1,8 +1,12 @@
 name: Send Telegram Message3
 
 on:
-  schedule:
-    - cron: "* * * * *" # 매 분마다 실행
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   send-message:
