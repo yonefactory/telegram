@@ -3,12 +3,11 @@ name: Send Telegram Message
 on:
   schedule:
     - cron: "* * * * *" # 매 분마다 실행
-
+ 
 jobs:
-  build:
-    send-message:
-      runs-on: ubuntu-latest
-      steps:
+  send-message:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v3
   
