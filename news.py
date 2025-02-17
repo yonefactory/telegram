@@ -99,7 +99,7 @@ def get_latest_rss_news():
 
     print(f"rss뉴스: {news_list}")
 
-    return news_list
+    return "\n\n".join(news_items)
 
 def send_telegram_message(message):
     """Telegram 봇으로 메시지 전송"""
