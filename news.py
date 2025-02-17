@@ -24,7 +24,7 @@ def get_latest_news():
 
 def get_latest_korean_news():
     """한국 주요 뉴스 5개 가져오기"""
-    url = "https://news.naver.com/main/home.naver"  # 네이버 뉴스 메인 페이지
+    url = "https://news.naver.com/main/latestNews.naver"  # 네이버 뉴스 메인 페이지
 
     # User-Agent 목록
     USER_AGENTS = [
@@ -52,12 +52,13 @@ def get_latest_korean_news():
     
     # 랜덤으로 프록시 선택
     proxies = random.choice(proxies_list)
-    
+
+    response = requests.get(url, headers=headers)
     #response = requests.get(url, headers=headers, proxies=proxies)
     #response = requests.get(url, headers=headers, proxies=proxies, verify=False)
 
-    session = requests.Session()
-    response = session.get(url, headers=headers)
+    #session = requests.Session()
+    #response = session.get(url, headers=headers)
     
     if response.status_code != 200:
         print(f"Failed to fetch news: {response.status_code}")
