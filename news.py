@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from transformers import BartForConditionalGeneration, BartTokenizer
 import os
-import random
 import feedparser
 
 # Telegram 봇 정보
@@ -10,25 +9,26 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # GitHub Secrets에서 가
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")  # GitHub Secrets에서 가져옴
 TELEGRAM_GROUP_CHAT_ID = os.getenv("TELEGRAM_GROUP_CHAT_ID")
 
-# BART 모델과 토크나이저 로딩 (사전 학습된 모델 사용)
-model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
-tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
+# KoBART 모델과 토크나이저 로딩 (사전 학습된 한국어 모델 사용)
+model = BartForConditionalGeneration.from_pretrained('kykim/koBART-base')
+tokenizer = BartTokenizer.from_pretrained('kykim/koBART-base')
 
 def fetch_article_content(url):
     """기사 URL에서 본문 내용을 크롤링하고 리턴"""
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     
-    # 기사 본문이 있는 태그를 찾아서 텍스트를 반환 (네이버, 연합뉴스 등 웹사이트마다 다를 수 있음)
-    paragraphs = soup.find_all('div', {'class': 'news_body'})  # 연합뉴스 기사 본문 div class 예시
+    # 기사 본문이 있는 태그를 찾아서 텍스트를 반환 (연합뉴스 기사 본문 div class 예시)
+    paragraphs = soup.find_all('div', {'class': 'news_body'})
     content = ' '.join([para.get_text() for para in paragraphs])
 
     return content
 
 def summarize_text(text):
-    """기사 본문을 요약"""
-    inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
-    summary_ids = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
+    """기사 본문을 KoBART 모델을 사용하여 요약"""
+    input_text = "summarize: " + text
+    input_ids = tokenizer.encode(input_text, return_tensors="pt", max_length=512, truncation=True)
+    summary_ids = model.generate(input_ids, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
     summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
     return summary
 
