@@ -39,7 +39,13 @@ def get_latest_korean_news():
         "User-Agent": random.choice(USER_AGENTS)
     }
 
-    response = requests.get(url, headers=headers)
+    proxies = {
+    "http": "http://your_proxy_ip:port",
+    "https": "http://your_proxy_ip:port",
+    }
+    
+    response = requests.get(url, headers=headers, proxies=proxies)
+
     if response.status_code != 200:
         print(f"Failed to fetch news: {response.status_code}")
         return []
