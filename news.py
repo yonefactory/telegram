@@ -25,11 +25,15 @@ def fetch_article_content(url):
     return content
 
 def summarize_text(text):
-    """기사 본문을 요약"""
+    """기사 요약"""
+    # 줄 바꿈 문자 제거 또는 공백으로 변경
+    text = text.replace('\n', ' ').replace('\r', ' ')
+
+    # 토크나이저를 통해 텍스트를 인코딩
     inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
     summary_ids = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
-    
-    # 디코딩 시 오류 방지를 위한 예외 처리
+
+    # 요약 텍스트 디코딩
     summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
     return summary
 
