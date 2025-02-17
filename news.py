@@ -7,6 +7,7 @@ import feedparser
 # Telegram 봇 정보
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # GitHub Secrets에서 가져옴
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")  # GitHub Secrets에서 가져옴
+TELEGRAM_GROUP_CHAT_ID = os.getenv("TELEGRAM_GROUP_CHAT_ID")
 
 def get_latest_news():
     NEWS_URL = "https://news.ycombinator.com/"  # Hacker News 예시
@@ -105,7 +106,7 @@ def send_telegram_message(message):
     """Telegram 봇으로 메시지 전송"""
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     data = {
-        "chat_id": TELEGRAM_CHAT_ID,
+        "chat_id": TELEGRAM_GROUP_CHAT_ID,
         "text": message,
         "disable_web_page_preview": True,
         "parse_mode": "Markdown"
