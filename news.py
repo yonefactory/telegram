@@ -51,7 +51,7 @@ def get_latest_korean_news():
     ]
     
     # 랜덤으로 프록시 선택
-    proxy = random.choice(proxies_list)
+    proxies = random.choice(proxies_list)
     
     response = requests.get(url, headers=headers, proxies=proxies)
 
