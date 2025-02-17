@@ -40,8 +40,8 @@ def get_latest_korean_news():
     }
 
     proxies = {
-    "http": "http://your_proxy_ip:port",
-    "https": "http://your_proxy_ip:port",
+        "http": "http://your_proxy_ip:port",
+        "https": "http://your_proxy_ip:port",
     }
     
     response = requests.get(url, headers=headers, proxies=proxies)
