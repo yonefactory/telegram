@@ -54,8 +54,11 @@ def get_latest_korean_news():
     proxies = random.choice(proxies_list)
     
     #response = requests.get(url, headers=headers, proxies=proxies)
-    response = requests.get(url, headers=headers, proxies=proxies, verify=False)
+    #response = requests.get(url, headers=headers, proxies=proxies, verify=False)
 
+    session = requests.Session()
+    response = session.get(url, headers=hearders)
+    
     if response.status_code != 200:
         print(f"Failed to fetch news: {response.status_code}")
         return []
