@@ -10,7 +10,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 TELEGRAM_GROUP_CHAT_ID = os.getenv("TELEGRAM_GROUP_CHAT_ID")
 
 # KoBART 모델과 토크나이저 로딩 (공개된 KoBART 모델 사용)
-model = BartForConditionalGeneration.from_pretrained('gogamza/kobart-base-v2')
+model = BartForConditionalGeneration.from_pretrained('gogamza/kobart-base-v2', num_labels=2)
 tokenizer = BartTokenizer.from_pretrained('gogamza/kobart-base-v2')
 
 def fetch_article_content(url):
