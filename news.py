@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import random
 
 # Telegram 봇 정보
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # GitHub Secrets에서 가져옴
