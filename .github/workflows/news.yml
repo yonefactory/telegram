@@ -1,0 +1,28 @@
+name: News to Telegram
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # 매시간 정각 실행 (UTC 기준)
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  send_news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Python 환경 설정
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+
+      - name: 필요한 패키지 설치
+        run: pip install requests beautifulsoup4
+
+      - name: 뉴스 크롤링 및 Telegram 전송
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python news.py
