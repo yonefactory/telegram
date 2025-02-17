@@ -23,9 +23,7 @@ jobs:
 
       - name: Hugging Face 로그인
         run: |
-          from huggingface_hub import login
-          import os
-          login(token=os.getenv('HUGGINGFACE_TOKEN'))  # GitHub Secrets에서 토큰을 자동으로 사용
+          python -c "from huggingface_hub import login; login(token='${{ secrets.HUGGINGFACE_TOKEN }}')"
 
       - name: 뉴스 크롤링 및 Telegram 전송
         env:
