@@ -81,7 +81,7 @@ def get_latest_korean_news():
 
 def get_latest_rss_news():
     # 네이버 뉴스 RSS 피드 URL (주요 뉴스)
-    rss_url = "https://rss.naver.com/news/mainnews.rss"
+    rss_url = "https://www.yna.co.kr/rss/news.xml"
 
     """네이버 뉴스 RSS 피드에서 최신 기사 가져오기"""
     feed = feedparser.parse(rss_url)  # RSS 피드 파싱
