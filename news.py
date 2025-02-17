@@ -80,11 +80,16 @@ def get_latest_korean_news():
     return news_list
 
 def get_latest_rss_news():
-    # 네이버 뉴스 RSS 피드 URL (주요 뉴스)
+
+    # 연합뉴스 RSS 피드 URL
     rss_url = "https://www.yna.co.kr/rss/news.xml"
 
-    """네이버 뉴스 RSS 피드에서 최신 기사 가져오기"""
+    """연합뉴스 RSS 피드에서 최신 기사 가져오기"""
     feed = feedparser.parse(rss_url)  # RSS 피드 파싱
+    
+    # 전체 항목 확인
+    print(f"전체 항목 수: {len(feed.entries)}")
+
     news_list = []
 
     for entry in feed.entries[:5]:  # 상위 5개 기사만 가져오기
