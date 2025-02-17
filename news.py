@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.summarizers.lsa import LsaSummarizer
 import os
 import random
 import feedparser
@@ -80,6 +82,27 @@ def get_latest_korean_news():
     
     return news_list
 
+def fetch_article_content(url):
+    """기사 URL에서 본문 내용을 크롤링하고 리턴"""
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # 기사 본문이 있는 태그를 찾아서 텍스트를 반환 (네이버, 연합뉴스 등 웹사이트마다 다를 수 있음)
+    # 예시: 연합뉴스 본문 크롤링
+    paragraphs = soup.find_all('div', {'class': 'news_body'})  # 연합뉴스 기사 본문 div class 예시
+    content = ' '.join([para.get_text() for para in paragraphs])
+
+    return content
+
+def summarize_text(text):
+    """기사 본문을 요약"""
+    parser = PlaintextParser.from_string(text, PlaintextParser.from_string(text, text))
+    summarizer = LsaSummarizer()
+    summary = summarizer(parser.document, 2)  # 2개의 문장으로 요약
+    summary_text = ' '.join([str(sentence) for sentence in summary])
+
+    return summary_text
+
 def get_latest_rss_news():
 
     # 연합뉴스 RSS 피드 URL
@@ -96,7 +119,15 @@ def get_latest_rss_news():
     for entry in feed.entries[:5]:  # 상위 5개 기사만 가져오기
         title = entry.title
         link = entry.link
-        news_list.append(f"{title}\n{link}")
+
+        # 기사 본문 크롤링
+        article_content = fetch_article_content(link)
+        
+        # 본문 요약
+        summary = summarize_text(article_content)
+        
+        news_list.append(f"**{title}**\n{summary}\n{link}")
+        #news_list.append(f"{title}\n{link}")
 
     print(f"rss뉴스: {news_list}")
 
