@@ -19,7 +19,13 @@ jobs:
           python-version: "3.x"
 
       - name: 필요한 패키지 설치
-        run: pip install requests beautifulsoup4 feedparser torch transformers
+        run: |
+          pip install requests beautifulsoup4 feedparser torch transformers
+          pip install huggingface_hub  # Hugging Face CLI 도구 설치 (로그인 필요)
+
+      - name: Hugging Face 로그인
+        run: |
+          echo "${{ secrets.HUGGINGFACE_TOKEN }}" | huggingface-cli login
 
       - name: 뉴스 크롤링 및 Telegram 전송
         env:
