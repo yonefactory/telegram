@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import random
+import feedparser
 
 # Telegram 봇 정보
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # GitHub Secrets에서 가져옴
@@ -78,6 +79,21 @@ def get_latest_korean_news():
     
     return news_list
 
+def fetch_latest_rss_news():
+    # 네이버 뉴스 RSS 피드 URL (주요 뉴스)
+    rss_url = "https://rss.naver.com/news/mainnews.rss"
+
+    """네이버 뉴스 RSS 피드에서 최신 기사 가져오기"""
+    feed = feedparser.parse(rss_url)  # RSS 피드 파싱
+    news_list = []
+
+    for entry in feed.entries[:5]:  # 상위 5개 기사만 가져오기
+        title = entry.title
+        link = entry.link
+        news_list.append(f"{title}\n{link}")
+    
+    return news_list
+
 def send_telegram_message(message):
     """Telegram 봇으로 메시지 전송"""
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -91,7 +107,7 @@ def send_telegram_message(message):
     return response.json()
 
 if __name__ == "__main__":
-    news = get_latest_korean_news()
+    news = get_latest_rss_news()
     if news:
         send_telegram_message(news)
     else:
