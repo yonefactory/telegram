@@ -25,11 +25,12 @@ def fetch_article_content(url):
     return content
 
 def summarize_text(text):
-    """기사 본문을 KoBART 모델을 사용하여 요약"""
-    input_text = "summarize: " + text
-    input_ids = tokenizer.encode(input_text, return_tensors="pt", max_length=512, truncation=True)
-    summary_ids = model.generate(input_ids, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
-    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+    """기사 본문을 요약"""
+    inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
+    summary_ids = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
+    
+    # 디코딩 시 오류 방지를 위한 예외 처리
+    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
     return summary
 
 def get_latest_rss_news():
