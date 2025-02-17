@@ -26,15 +26,19 @@ def fetch_article_content(url):
 
 def summarize_text(text):
     """기사 요약"""
-    # 줄 바꿈 문자 제거 또는 공백으로 변경
+    # 줄 바꿈 문자 제거
     text = text.replace('\n', ' ').replace('\r', ' ')
 
-    # 토크나이저를 통해 텍스트를 인코딩
+    # 텍스트를 인코딩하고 요약 생성
     inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
     summary_ids = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
 
-    # 요약 텍스트 디코딩
-    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+    # 요약을 디코딩
+    try:
+        summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+    except KeyError as e:
+        print(f"KeyError: {e}. Check the input text for problematic characters.")
+        summary = "Error in summary generation."
     return summary
 
 def get_latest_rss_news():
