@@ -96,7 +96,9 @@ def get_latest_rss_news():
         title = entry.title
         link = entry.link
         news_list.append(f"{title}\n{link}")
-    
+
+    print(f"rss뉴스: {news_list}")
+
     return news_list
 
 def send_telegram_message(message):
