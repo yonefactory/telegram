@@ -5,13 +5,13 @@ import os
 import feedparser
 
 # Telegram 봇 정보
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # GitHub Secrets에서 가져옴
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")  # GitHub Secrets에서 가져옴
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 TELEGRAM_GROUP_CHAT_ID = os.getenv("TELEGRAM_GROUP_CHAT_ID")
 
-# KoBART 모델과 토크나이저 로딩 (사전 학습된 한국어 모델 사용)
-model = BartForConditionalGeneration.from_pretrained('kykim/koBART-base')
-tokenizer = BartTokenizer.from_pretrained('kykim/koBART-base')
+# KoBART 모델과 토크나이저 로딩 (공개된 KoBART 모델 사용)
+model = BartForConditionalGeneration.from_pretrained('skt/kobart-base-v2')
+tokenizer = BartTokenizer.from_pretrained('skt/kobart-base-v2')
 
 def fetch_article_content(url):
     """기사 URL에서 본문 내용을 크롤링하고 리턴"""
