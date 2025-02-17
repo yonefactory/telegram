@@ -70,7 +70,7 @@ def send_telegram_message(message):
     return response.json()
 
 if __name__ == "__main__":
-    news = get_latest_kroean_news()
+    news = get_latest_korean_news()
     if news:
         send_telegram_message(news)
     else:
