@@ -39,10 +39,19 @@ def get_latest_korean_news():
         "User-Agent": random.choice(USER_AGENTS)
     }
 
-    proxies = {
-        "http": "http://your_proxy_ip:port",
-        "https": "http://your_proxy_ip:port",
-    }
+    # 프록시 리스트
+    proxies_list = [
+        {"http": "http://5.78.124.240:40000", "https": "http://5.78.124.240:40000"},
+        {"http": "http://222.252.194.204:8080", "https": "http://222.252.194.204:8080"},
+        {"http": "http://85.215.64.49:80", "https": "http://85.215.64.49:80"},
+        {"http": "http://72.10.160.170:5475", "https": "http://72.10.160.170:5475"},
+        {"http": "http://50.223.246.23:80", "https": "http://50.223.246.23:80"},
+        {"http": "http://50.174.7.159:80", "https": "http://50.174.7.159:80"},
+        {"http": "http://41.207.187.178:80", "https"": "http://41.207.187.178:80"},
+    ]
+    
+    # 랜덤으로 프록시 선택
+    proxy = random.choice(proxies_list)
     
     response = requests.get(url, headers=headers, proxies=proxies)
 
