@@ -47,7 +47,7 @@ def get_latest_rss_news():
     return new_news_list
 
 def send_telegram_message(message):
-    """Telegram 봇으로 메시지 전송"""
+    """Telegram 봇으로 메시지 전송 후 응답 확인"""
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": TELEGRAM_GROUP_CHAT_ID,
@@ -56,6 +56,15 @@ def send_telegram_message(message):
         "parse_mode": "Markdown"
     }
     response = requests.post(url, data=data)
+    
+    # ✅ 디버깅 코드 추가: 응답 상태 확인
+    if response.status_code == 200:
+        print("✅ Telegram 메시지 전송 성공!")
+    else:
+        print("❌ Telegram 메시지 전송 실패!")
+        print("🔍 응답 코드:", response.status_code)
+        print("📌 응답 내용:", response.text)
+
     return response.json()
 
 if __name__ == "__main__":
@@ -64,12 +73,12 @@ if __name__ == "__main__":
     if news_list:  # 새로운 뉴스가 있을 경우만 전송
         message = f"📢 **실시간 뉴스 업데이트**\n\n" + "\n\n".join(news_list)
         
-        # ✅ 디버깅 코드 추가: 메시지 전송 전 콘솔 출력
+        # ✅ 디버깅 코드 추가: 전송 전 터미널 출력
         print("\n===== 📰 전송할 뉴스 목록 =====")
         print(message)
         print("================================\n")
         
-        # ✅ 자동으로 Telegram 메시지 전송
+        # ✅ Telegram 메시지 전송 후 응답 확인
         send_telegram_message(message)
     
     else:
