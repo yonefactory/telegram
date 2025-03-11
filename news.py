@@ -8,44 +8,46 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 TELEGRAM_GROUP_CHAT_ID = os.getenv("TELEGRAM_GROUP_CHAT_ID")
 
-# 이전에 보낸 뉴스 저장 파일
+# 마지막으로 보낸 뉴스 저장 파일
 NEWS_CACHE_FILE = "sent_news_cache.json"
 
 # Telegram 메시지 길이 제한 (4096자)
 TELEGRAM_MESSAGE_LIMIT = 4000  # 안전하게 4000자로 제한
 
-def load_sent_news():
-    """이전에 보낸 뉴스 목록 불러오기"""
+def load_last_sent_news():
+    """이전에 보낸 뉴스의 마지막 기사 링크를 불러오기"""
     if os.path.exists(NEWS_CACHE_FILE):
         with open(NEWS_CACHE_FILE, "r", encoding="utf-8") as file:
-            return json.load(file)
-    return []
+            data = json.load(file)
+            return data.get("last_sent_news", None)  # 저장된 마지막 기사 링크 반환
+    return None  # 파일이 없으면 None 반환
 
-def save_sent_news(news_list):
-    """보낸 뉴스 목록 저장"""
+def save_last_sent_news(last_news_link):
+    """마지막으로 보낸 뉴스의 링크를 저장"""
     with open(NEWS_CACHE_FILE, "w", encoding="utf-8") as file:
-        json.dump(news_list, file, ensure_ascii=False, indent=4)
+        json.dump({"last_sent_news": last_news_link}, file, ensure_ascii=False, indent=4)
 
 def get_latest_rss_news():
     """연합뉴스 RSS 피드에서 새로운 기사 가져오기"""
     rss_url = "https://www.yna.co.kr/rss/news.xml"
     feed = feedparser.parse(rss_url)  # RSS 피드 파싱
 
-    sent_news = load_sent_news()  # 이전에 보낸 뉴스 로드
+    last_sent_news = load_last_sent_news()  # 마지막으로 보낸 뉴스 링크 가져오기
     new_news_list = []
 
-    for entry in feed.entries:
+    for entry in reversed(feed.entries):  # 최신 뉴스부터 읽되, 순서 맞추기 위해 reversed 사용
         title = entry.title
         link = entry.link
-        
-        # 이미 보낸 뉴스인지 확인
-        if link not in sent_news:
-            new_news_list.append(f"🔹 **{title}**\n{link}")
-            sent_news.append(link)
 
-    # 보낸 뉴스 기록 업데이트
+        # 마지막으로 보낸 뉴스 이후부터 전송
+        if last_sent_news and link == last_sent_news:
+            break  # 저장된 뉴스까지 도달하면 중단
+
+        new_news_list.append(f"🔹 **{title}**\n{link}")
+
+    # 가장 최신 뉴스 링크 저장
     if new_news_list:
-        save_sent_news(sent_news)
+        save_last_sent_news(feed.entries[0].link)  # 최신 뉴스의 링크 저장
 
     return new_news_list
 
