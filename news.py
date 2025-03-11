@@ -18,38 +18,44 @@ TELEGRAM_MESSAGE_LIMIT = 4000  # 안전하게 4000자로 제한
 MAX_NEWS_HISTORY = 50
 
 def load_sent_news():
-    """이전에 보낸 뉴스 목록 불러오기"""
-    if os.path.exists(NEWS_CACHE_FILE):
+    """이전에 보낸 뉴스 목록 불러오기 (없으면 자동 생성)"""
+    if not os.path.exists(NEWS_CACHE_FILE):
+        print("📂 JSON 파일이 존재하지 않습니다. 새로 생성합니다.")
+        save_sent_news([])  # JSON 파일 자동 생성 (빈 리스트 저장)
+    
+    try:
         with open(NEWS_CACHE_FILE, "r", encoding="utf-8") as file:
-            try:
-                return json.load(file)
-            except json.JSONDecodeError:
-                print("❌ JSON 파일이 손상되었습니다. 파일을 삭제하고 다시 시도해 주세요.")
-                return []  # 파일 손상 시 빈 리스트 반환
-    return []
+            return json.load(file)
+    except json.JSONDecodeError:
+        print("❌ JSON 파일이 손상되었습니다. 초기화합니다.")
+        save_sent_news([])  # JSON 파일 초기화
+        return []
 
 def save_sent_news(news_list):
     """보낸 뉴스 목록 저장 (최대 MAX_NEWS_HISTORY 개 유지)"""
-    with open(NEWS_CACHE_FILE, "w", encoding="utf-8") as file:
-        json.dump(news_list[-MAX_NEWS_HISTORY:], file, ensure_ascii=False, indent=4)
+    try:
+        with open(NEWS_CACHE_FILE, "w", encoding="utf-8") as file:
+            json.dump(news_list[-MAX_NEWS_HISTORY:], file, ensure_ascii=False, indent=4)
+
+        # ✅ 디버깅 코드 추가: 저장된 뉴스 개수 출력
+        print("\n📂 JSON 파일 저장 완료!")
+        print(f"✅ 저장된 뉴스 개수: {len(news_list[-MAX_NEWS_HISTORY:])}")
+        if news_list:
+            print(f"📰 첫 번째 뉴스: {news_list[0]['title']} ({news_list[0]['link']})")
+        print("================================\n")
+    except Exception as e:
+        print(f"❌ JSON 파일 저장 중 오류 발생: {e}")
 
 def debug_show_sent_news():
     """JSON 파일에 저장된 뉴스 목록 출력 (디버깅용)"""
-    if os.path.exists(NEWS_CACHE_FILE):
-        with open(NEWS_CACHE_FILE, "r", encoding="utf-8") as file:
-            try:
-                sent_news = json.load(file)
-                print("\n===== 📂 저장된 뉴스 목록 (sent_news_cache.json) =====")
-                if sent_news:
-                    for i, news in enumerate(sent_news, 1):
-                        print(f"{i}. {news['title']} ({news['link']})")
-                else:
-                    print("📂 저장된 뉴스가 없습니다.")
-                print("================================\n")
-            except json.JSONDecodeError:
-                print("❌ JSON 파일이 손상되었습니다. 파일을 삭제하고 다시 시도해 주세요.")
+    sent_news = load_sent_news()
+    print("\n===== 📂 저장된 뉴스 목록 (sent_news_cache.json) =====")
+    if sent_news:
+        for i, news in enumerate(sent_news, 1):
+            print(f"{i}. {news['title']} ({news['link']})")
     else:
-        print("❌ sent_news_cache.json 파일이 존재하지 않습니다.")
+        print("📂 저장된 뉴스가 없습니다.")
+    print("================================\n")
 
 def get_latest_rss_news():
     """연합뉴스 RSS 피드에서 새로운 기사 가져오기"""
