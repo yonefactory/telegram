@@ -19,16 +19,11 @@ jobs:
           python-version: "3.x"
 
       - name: 필요한 패키지 설치
-        run: pip install requests beautifulsoup4 feedparser torch transformers huggingface_hub
-
-      - name: Hugging Face 로그인
-        run: |
-          python -c "from huggingface_hub import login; login(token='${{ secrets.HUGGINGFACE_TOKEN }}')"
+        run: pip install requests feedparser
 
       - name: 뉴스 크롤링 및 Telegram 전송
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_GROUP_CHAT_ID: ${{ secrets.TELEGRAM_GROUP_CHAT_ID }}
-          HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}  # Hugging Face 토큰 추가
         run: python news.py
