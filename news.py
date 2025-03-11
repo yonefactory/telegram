@@ -21,7 +21,11 @@ def load_sent_news():
     """이전에 보낸 뉴스 목록 불러오기"""
     if os.path.exists(NEWS_CACHE_FILE):
         with open(NEWS_CACHE_FILE, "r", encoding="utf-8") as file:
-            return json.load(file)
+            try:
+                return json.load(file)
+            except json.JSONDecodeError:
+                print("❌ JSON 파일이 손상되었습니다. 파일을 삭제하고 다시 시도해 주세요.")
+                return []  # 파일 손상 시 빈 리스트 반환
     return []
 
 def save_sent_news(news_list):
@@ -31,14 +35,21 @@ def save_sent_news(news_list):
 
 def debug_show_sent_news():
     """JSON 파일에 저장된 뉴스 목록 출력 (디버깅용)"""
-    sent_news = load_sent_news()
-    print("\n===== 📂 저장된 뉴스 목록 (sent_news_cache.json) =====")
-    if sent_news:
-        for i, news in enumerate(sent_news, 1):
-            print(f"{i}. {news['title']} ({news['link']})")
+    if os.path.exists(NEWS_CACHE_FILE):
+        with open(NEWS_CACHE_FILE, "r", encoding="utf-8") as file:
+            try:
+                sent_news = json.load(file)
+                print("\n===== 📂 저장된 뉴스 목록 (sent_news_cache.json) =====")
+                if sent_news:
+                    for i, news in enumerate(sent_news, 1):
+                        print(f"{i}. {news['title']} ({news['link']})")
+                else:
+                    print("📂 저장된 뉴스가 없습니다.")
+                print("================================\n")
+            except json.JSONDecodeError:
+                print("❌ JSON 파일이 손상되었습니다. 파일을 삭제하고 다시 시도해 주세요.")
     else:
-        print("📂 저장된 뉴스가 없습니다.")
-    print("================================\n")
+        print("❌ sent_news_cache.json 파일이 존재하지 않습니다.")
 
 def get_latest_rss_news():
     """연합뉴스 RSS 피드에서 새로운 기사 가져오기"""
