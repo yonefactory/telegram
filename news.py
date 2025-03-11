@@ -37,7 +37,7 @@ def get_latest_rss_news():
         
         # 이미 보낸 뉴스인지 확인
         if link not in sent_news:
-            new_news_list.append(f"🔹 **{title}**\n🔗 [기사 보기]({link})")
+            new_news_list.append(f"🔹 **{title}**\n{link}")
             sent_news.append(link)
 
     # 보낸 뉴스 기록 업데이트
@@ -69,13 +69,8 @@ if __name__ == "__main__":
         print(message)
         print("================================\n")
         
-        # ✅ 사용자 입력을 받아 확인 후 전송
-        confirm = input("🚀 이 뉴스를 Telegram으로 전송하시겠습니까? (y/n): ").strip().lower()
-        if confirm == "y":
-            send_telegram_message(message)
-            print("✅ 뉴스가 Telegram으로 전송되었습니다!")
-        else:
-            print("🚫 뉴스 전송이 취소되었습니다.")
+        # ✅ 자동으로 Telegram 메시지 전송
+        send_telegram_message(message)
     
     else:
         print("🔍 새로운 뉴스가 없습니다. 전송하지 않습니다.")
