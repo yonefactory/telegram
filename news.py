@@ -34,10 +34,14 @@ def get_latest_rss_news():
 
     last_sent_news = load_last_sent_news()  # 마지막으로 보낸 뉴스 링크 가져오기
     new_news_list = []
+    latest_news_link = None  # 가장 최신 뉴스의 링크 저장 변수
 
-    for entry in reversed(feed.entries):  # 최신 뉴스부터 읽되, 순서 맞추기 위해 reversed 사용
+    for entry in feed.entries:  # 최신 뉴스부터 순서대로 읽기
         title = entry.title
         link = entry.link
+
+        if latest_news_link is None:
+            latest_news_link = link  # 첫 번째 뉴스(가장 최신 뉴스)의 링크 저장
 
         # 마지막으로 보낸 뉴스 이후부터 전송
         if last_sent_news and link == last_sent_news:
@@ -45,11 +49,11 @@ def get_latest_rss_news():
 
         new_news_list.append(f"🔹 **{title}**\n{link}")
 
-    # 가장 최신 뉴스 링크 저장
+    # 새로운 뉴스가 있을 경우만 최신 뉴스 링크 저장
     if new_news_list:
-        save_last_sent_news(feed.entries[0].link)  # 최신 뉴스의 링크 저장
+        save_last_sent_news(latest_news_link)
 
-    return new_news_list
+    return new_news_list[::-1]  # 최신 기사부터 순서대로 정렬하여 반환
 
 def split_message(messages):
     """Telegram 메시지 길이 제한을 고려하여 분할"""
