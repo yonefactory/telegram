@@ -62,4 +62,4 @@ if __name__ == "__main__":
     news = get_latest_rss_news()
     
     if news:  # 새로운 뉴스가 있을 경우만 전송
-        send_telegram_message(f"📰 **오늘의 최신 뉴스**\n\n{news}")
+        send_telegram_message(f"📢 **실시간 뉴스 업데이트**\n\n{news}")
