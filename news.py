@@ -44,7 +44,7 @@ def get_latest_rss_news():
     if new_news_list:
         save_sent_news(sent_news)
 
-    return "\n\n".join(new_news_list)
+    return new_news_list
 
 def send_telegram_message(message):
     """Telegram 봇으로 메시지 전송"""
@@ -59,7 +59,23 @@ def send_telegram_message(message):
     return response.json()
 
 if __name__ == "__main__":
-    news = get_latest_rss_news()
+    news_list = get_latest_rss_news()
     
-    if news:  # 새로운 뉴스가 있을 경우만 전송
-        send_telegram_message(f"📢 **실시간 뉴스 업데이트**\n\n{news}")
+    if news_list:  # 새로운 뉴스가 있을 경우만 전송
+        message = f"📢 **실시간 뉴스 업데이트**\n\n" + "\n\n".join(news_list)
+        
+        # ✅ 디버깅 코드 추가: 메시지 전송 전 콘솔 출력
+        print("\n===== 📰 전송할 뉴스 목록 =====")
+        print(message)
+        print("================================\n")
+        
+        # ✅ 사용자 입력을 받아 확인 후 전송
+        confirm = input("🚀 이 뉴스를 Telegram으로 전송하시겠습니까? (y/n): ").strip().lower()
+        if confirm == "y":
+            send_telegram_message(message)
+            print("✅ 뉴스가 Telegram으로 전송되었습니다!")
+        else:
+            print("🚫 뉴스 전송이 취소되었습니다.")
+    
+    else:
+        print("🔍 새로운 뉴스가 없습니다. 전송하지 않습니다.")
